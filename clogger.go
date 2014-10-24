@@ -7,11 +7,11 @@ import (
 )
 
 const (
-	Fatal   = 0
-	Error   = 1
-	Warning = 2
-	Info    = 3
-	Debug   = 4
+	Fatal = iota
+	Error
+	Warning
+	Info
+	Debug
 )
 
 type Logger struct {
