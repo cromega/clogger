@@ -3,7 +3,6 @@ package clogger_test
 import (
 	. "github.com/cromega/clogger"
 
-	//"fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"strings"
@@ -23,12 +22,13 @@ func (self *drain) Write(data []byte) (n int, err error) {
 //
 
 var _ = Describe("Clogger", func() {
-	var log *Logger
-	var target *drain
+	var log Logger
+	var target drain
 
 	BeforeEach(func() {
-		target = &drain{Buffer: make([]string, 0)}
-		log = InitLogger(target, Debug)
+		target = drain{Buffer: make([]string, 0)}
+		log = InitLogger(Debug)
+		log.AddTarget(&target)
 	})
 
 	It("does debug logging", func() {
@@ -76,5 +76,15 @@ var _ = Describe("Clogger", func() {
 		log.Debug("message %v", 123)
 
 		Expect(target.Buffer).To(BeEmpty())
+	})
+
+	It("logs to all drains", func() {
+		log.Level = Debug
+		target2 := drain{Buffer: make([]string, 0)}
+		log.AddTarget(&target2)
+		log.Debug("message %v", 123)
+
+		Expect(len(target.Buffer)).To(Equal(1))
+		Expect(len(target2.Buffer)).To(Equal(1))
 	})
 })

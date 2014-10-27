@@ -15,18 +15,24 @@ const (
 )
 
 type Logger struct {
-	target io.Writer
-	Level  int
+	targets []io.Writer
+	Level   int
 }
 
-func InitLogger(target io.Writer, level int) *Logger {
-	return &Logger{target: target, Level: level}
+func InitLogger(level int) Logger {
+	return Logger{targets: make([]io.Writer, 0), Level: level}
+}
+
+func (logger *Logger) AddTarget(target io.Writer) {
+	logger.targets = append(logger.targets, target)
 }
 
 func (logger *Logger) log(severity string, message string, objs ...interface{}) {
 	fullMessage := fmt.Sprintf(message, objs...)
 	time := time.Now().Format("01/02/2006 15:04:05")
-	fmt.Fprintf(logger.target, "%s, %s: %s\n", time, severity, fullMessage)
+	for _, target := range logger.targets {
+		fmt.Fprintf(target, "%s, %s: %s\n", time, severity, fullMessage)
+	}
 }
 
 func (logger *Logger) Debug(message string, objs ...interface{}) {
