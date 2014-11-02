@@ -14,10 +14,12 @@ import (
 )
 
 func main() {
-  logger := clogger.InitLogger(os.Stdout, clogger.Debug) // it takes any io.Writer
+  logger := clogger.CreateLogger(clogger.Debug)
+  logger.AddTarget(clogger.CreateWriterTarget(io.Stdout))
   logger.Debug("my god, it's full of %v", "stars")
-})
+}
 ```
+`AddTarget` takes a `*clogger.CloggerTarget`
 
 it produces `10/24/2014 19:45:02, D: my god, it's full of stars`
 
