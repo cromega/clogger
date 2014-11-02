@@ -10,8 +10,6 @@ type WriterTarget struct {
 	target io.Writer
 }
 
-const timeFormat = "01/02/2006 15:04:05"
-
 func CreateWriterTarget(target io.Writer) *WriterTarget {
 	return &WriterTarget{target: target}
 }
@@ -33,7 +31,7 @@ func (self *WriterTarget) Write(severity int, message string) {
 
 	t := time.Now().Format(timeFormat)
 
-	fmt.Fprintf(self.target, "%v, %v: %v", t, s, message)
+	fmt.Fprintf(self.target, "%v, %v: %v\n", t, s, message)
 }
 
 func (self *WriterTarget) Close() {

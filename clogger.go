@@ -10,6 +10,7 @@ const (
 	Warning
 	Info
 	Debug
+	timeFormat = "01/02/2006 15:04:05"
 )
 
 type CloggerTarget interface {
