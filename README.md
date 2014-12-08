@@ -14,14 +14,16 @@ import (
 )
 
 func main() {
-  logger := clogger.CreateLogger(clogger.Debug)
-  logger.AddTarget(clogger.CreateWriterTarget(io.Stdout))
-  logger.AddTarget(clogger.CreateFileTarget("stuff.log"))
-  logger.Debug("my god, it's full of %v", "stars")
+  var logger = clogger.Logger
+  target := os.Getenv("LOG")
+  if target == "local" {
+    logger = clogger.CreateIoLogger(os.Stdout)
+  } else {
+    logger = clogger.CreateSyslog("udp", "logs2.papertrailapp:12345", "app")
+  }
+
+  logger.Info("logging is awesome")
 }
 ```
-`AddTarget` takes a `*clogger.CloggerTarget`
 
-it produces `10/24/2014 19:45:02, D: my god, it's full of stars` in all destinations. Formatting the message, however, is the responsibility of each log target.
-
-log levels are: `Debug, Info, Warning, Error, Fatal`
+This logger does not do any level filtering. That is the concern of the consumer. Levels are Debug, Info, Warning, Error, Fatal (Critical)
