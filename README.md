@@ -14,8 +14,9 @@ import (
 )
 
 func main() {
-  var logger = clogger.Logger
+  var logger clogger.Logger
   target := os.Getenv("LOG")
+
   if target == "local" {
     logger = clogger.CreateIoLogger(os.Stdout)
   } else {
