@@ -1,7 +1,7 @@
 clogger
 =======
 
-a very basic logger for Go that doesn't actually terminate the process when you log something Fatal.
+a very basic wrapper around log.Logger and syslog that provides a common interface and severity filtering
 
 ## Usage
 
@@ -18,13 +18,14 @@ func main() {
   target := os.Getenv("LOG")
 
   if target == "local" {
-    logger = clogger.CreateIoLogger(os.Stdout)
+    logger = clogger.CreateIoWriter(os.Stdout)
   } else {
     logger = clogger.CreateSyslog("udp", "logs2.papertrailapp:12345", "app")
   }
 
+  logger.SetLevel(clogger.Debug)
   logger.Info("logging is awesome")
 }
 ```
 
-This logger does not do any level filtering. That is the concern of the consumer. Levels are Debug, Info, Warning, Error, Fatal (Critical)
+Levels are Debug, Info, Warning, Error, Fatal (Critical) and Off.
