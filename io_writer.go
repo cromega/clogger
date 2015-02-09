@@ -9,11 +9,11 @@ import (
 
 type writerLogger struct {
 	logger *log.Logger
-	baseIo io.Closer
+	baseIo io.Writer
 	level  int
 }
 
-func CreateIoWriter(target io.WriteCloser) Logger {
+func CreateIoWriter(target io.Writer) Logger {
 	logger := log.New(target, "", 0)
 	return &writerLogger{logger: logger, baseIo: target, level: Warning}
 }
@@ -74,5 +74,8 @@ func (l *writerLogger) SetLevel(level int) {
 }
 
 func (l *writerLogger) Close() {
-	l.baseIo.Close()
+	closer, ok := l.baseIo.(io.Closer)
+	if ok {
+		closer.Close()
+	}
 }
